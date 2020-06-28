@@ -13,7 +13,8 @@ Miscellaneous WAILA plugins for various mods. Requires [EnderCore](http://ci.tte
 - GT5u
    - Transformer mode (Step Up/Step Down)
    - Current side: input/output & EU
-   - Multiblock info
+   - Multiblock info and Multiblock Impact info
+   - Basic Machine info
 
 - Blood Magic (Ported from ImLookingAtBlood, by Pokefenn)
   - Capacity, LP, and tier of altars
