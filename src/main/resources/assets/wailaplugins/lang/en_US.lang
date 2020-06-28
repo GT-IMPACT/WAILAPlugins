@@ -67,6 +67,7 @@ wp.config.Gregtech5U.transformer=Show Transformer
 wp.config.Gregtech5U.solar=Show Solar Calcification
 wp.config.Gregtech5U.machineFacing=Show Machine Facing
 wp.config.Gregtech5U.multiblock=Show Multiblock Info
+wp.config.Gregtech5U.basicmachine=Show Basicmachine Info
 
 
 ## IC2 Crops

@@ -1,11 +1,14 @@
 package tterrag.wailaplugins.plugins;
 
 import com.enderio.core.common.util.BlockCoord;
+import com.impact.mods.GregTech.tileentities.multi.debug.GTMTE_MBBase;
+import com.impact.mods.GregTech.tileentities.multi.debug.GT_MetaTileEntity_MultiParallelBlockBase;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaPipeEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicMachine;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_MultiBlockBase;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Transformer;
 import gregtech.common.covers.GT_Cover_Fluidfilter;
@@ -42,6 +45,7 @@ public class PluginGregtech5U extends PluginBase
         addConfig("solar");
         addConfig("multiblock");
         addConfig("fluidFilter");
+        addConfig("basicmachine");
         registerBody(BaseTileEntity.class);
         registerNBT(BaseTileEntity.class);
     }
@@ -60,6 +64,10 @@ public class PluginGregtech5U extends PluginBase
         final IMetaTileEntity tMeta = tBaseMetaTile != null ? tBaseMetaTile.getMetaTileEntity() : null;
         final BaseMetaTileEntity mBaseMetaTileEntity = tile instanceof  BaseMetaTileEntity ? ((BaseMetaTileEntity) tile) : null;
         final GT_MetaTileEntity_MultiBlockBase multiBlockBase = tMeta instanceof GT_MetaTileEntity_MultiBlockBase ? ((GT_MetaTileEntity_MultiBlockBase) tMeta) : null;
+        final GT_MetaTileEntity_BasicMachine BasicMachine = tMeta instanceof GT_MetaTileEntity_BasicMachine ? ((GT_MetaTileEntity_BasicMachine) tMeta) : null;
+        final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
+        final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
+
 
         final boolean showTransformer = tMeta instanceof GT_MetaTileEntity_Transformer && getConfig("transformer");
         final boolean showSolar = tMeta instanceof GT_MetaTileEntity_Boiler_Solar && getConfig("solar");
@@ -107,13 +115,26 @@ public class PluginGregtech5U extends PluginBase
 
             if(multiBlockBase != null && getConfig("multiblock")) {
                 if(tag.getBoolean("incompleteStructure")) {
-                    currenttip.add(RED + "** INCOMPLETE STRUCTURE **" + RESET);
+                    currenttip.add(RED + "Incomplete Structure" + RESET);
                 }
-                currenttip.add((tag.getBoolean("hasProblems") ? (RED + "** HAS PROBLEMS **") : GREEN + "Running Fine") + RESET
-                                               + "  Efficiency: " + tag.getFloat("efficiency") + "%");
+                currenttip.add((tag.getBoolean("hasProblems") ? (RED + "Need Maintenance") : GREEN + "Running Fine") + RESET + "  Efficiency: " + tag.getFloat("efficiency") + "%");
 
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress"), tag.getInteger("maxProgress")));
 
+                if (MultiParallel != null) currenttip.add(String.format("Parallel Point: %d", tag.getInteger("Parallel")));
+            }
+
+            if(multiBlockBaseImpact != null && getConfig("multiblock")) {
+                if(tag.getBoolean("incompleteStructureImpact")) {
+                    currenttip.add(RED + "Incomplete Structure" + RESET);
+                }
+                currenttip.add((tag.getBoolean("hasProblemsImpact") ? (RED + "Need Maintenance") : GREEN + "Running Fine") + RESET + "  Efficiency: " + tag.getFloat("efficiencyImpact") + "%");
+
+                currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressImpact"), tag.getInteger("maxProgressImpact")));
+            }
+
+            if (BasicMachine != null && getConfig("basicmachine")) {
+                currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
             }
         }
 
@@ -127,6 +148,9 @@ public class PluginGregtech5U extends PluginBase
         final IGregTechTileEntity tBaseMetaTile = tile instanceof IGregTechTileEntity ? ((IGregTechTileEntity) tile) : null;
         final IMetaTileEntity tMeta = tBaseMetaTile != null ? tBaseMetaTile.getMetaTileEntity() : null;
         final GT_MetaTileEntity_MultiBlockBase multiBlockBase = tMeta instanceof GT_MetaTileEntity_MultiBlockBase ? ((GT_MetaTileEntity_MultiBlockBase) tMeta) : null;
+        final GT_MetaTileEntity_BasicMachine BasicMachine = tMeta instanceof GT_MetaTileEntity_BasicMachine ? ((GT_MetaTileEntity_BasicMachine) tMeta) : null;
+        final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
+        final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
 
         if (tMeta != null) {
             if (tMeta instanceof GT_MetaTileEntity_Transformer) {
@@ -154,7 +178,32 @@ public class PluginGregtech5U extends PluginBase
                 tag.setInteger("maxProgress", maxProgress);
                 tag.setBoolean("incompleteStructure", (tBaseMetaTile.getErrorDisplayID() & 64) != 0);
 
+                if (MultiParallel != null) {
+                    final int Parallel = MultiParallel.mParallel;
+                    tag.setInteger("Parallel", Parallel);
+                }
             }
+
+            if (multiBlockBaseImpact != null) {
+                final int problems = multiBlockBaseImpact.getIdealStatus() - multiBlockBaseImpact.getRepairStatus();
+                final float efficiency = multiBlockBaseImpact.mEfficiency / 100.0F;
+                final int progress = multiBlockBaseImpact.mProgresstime/20;
+                final int maxProgress = multiBlockBaseImpact.mMaxProgresstime/20;
+
+                tag.setBoolean("hasProblemsImpact", problems > 0);
+                tag.setFloat("efficiencyImpact", efficiency);
+                tag.setInteger("progressImpact", progress);
+                tag.setInteger("maxProgressImpact", maxProgress);
+                tag.setBoolean("incompleteStructureImpact", (tBaseMetaTile.getErrorDisplayID() & 64) != 0);
+            }
+
+            if (BasicMachine != null) {
+                final int progressSingleBlock = BasicMachine.mProgresstime/20;
+                final int maxProgressSingleBlock = BasicMachine.mMaxProgresstime/20;
+                tag.setInteger("progressSingleBlock", progressSingleBlock);
+                tag.setInteger("maxProgressSingleBlock", maxProgressSingleBlock);
+            }
+
         }
         if (tBaseMetaTile != null) {
             if (tBaseMetaTile instanceof BaseMetaPipeEntity) {

@@ -18,7 +18,7 @@ apply plugin: 'curseforge'
 
 group = 'tterrag.wailaplugins'
 archivesBaseName = "WAILAPlugins"
-version = "MC${minecraft_version}-${mod_version}-${System.getenv().BUILD_NUMBER}"
+version = "${mod_version}-impact"
 
 minecraft {
     version = "${minecraft_version}-${forge_version}"
@@ -57,6 +57,8 @@ repositories {
 }
 
 dependencies {
+    compile files("libs/gregtech-5.09.34.61-impact-dev.jar")
+    compile files("libs/Impact-0.0.3-dev.jar")
     compile "com.enderio.core:EnderCore:${endercore_version}:dev"
 	compile "mcp.mobius.waila:Waila:${WAILA_version}"
     compile "net.sengir.forestry:forestry_1.7.10:${forestry_version}:dev"
@@ -102,17 +104,6 @@ task deobfJar(type: Jar) {
 import de.undercouch.gradle.tasks.download.Download
 
 
-task downloadGregTech(type: Download) {
-    dest new File(buildDir, "gregtech-${gregtech_version}-dev.jar")
-
-    onlyIf {
-        !dest.exists()
-    }
-    src "http://jenkins.usrv.eu:8080/job/Gregtech-5-Unofficial/${gregtech_jenkinsbuild}/artifact/build/libs/gregtech-${gregtech_version}-dev.jar"
-    mustRunAfter "deobfBinJar"
-    mustRunAfter "repackMinecraft"
-}
-
 task downloadIC2(type: Download) {
     dest new File(buildDir, "industrialcraft-${ic2_version}-dev.jar")
 
@@ -124,10 +115,7 @@ task downloadIC2(type: Download) {
     mustRunAfter "repackMinecraft"
 }
 
-task downloadLibs(dependsOn: [downloadGregTech, downloadIC2], type: Copy) {
-    into file('libs')
-
-    from downloadGregTech.dest
+task downloadLibs(dependsOn: [downloadIC2], type: Copy) {
     into file('libs')
 
     from downloadIC2.dest
