@@ -3,14 +3,17 @@ package tterrag.wailaplugins.plugins;
 import com.enderio.core.common.util.BlockCoord;
 import com.impact.mods.GregTech.tileentities.multi.debug.GTMTE_MBBase;
 import com.impact.mods.GregTech.tileentities.multi.debug.GT_MetaTileEntity_MultiParallelBlockBase;
+import gregtech.api.enums.GT_Values;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.BaseMetaPipeEntity;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.BaseTileEntity;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicBatteryBuffer;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicMachine;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_MultiBlockBase;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Transformer;
+import gregtech.api.util.GT_Utility;
 import gregtech.common.covers.GT_Cover_Fluidfilter;
 import gregtech.common.tileentities.boilers.GT_MetaTileEntity_Boiler_Solar;
 import lombok.SneakyThrows;
@@ -23,13 +26,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import tterrag.wailaplugins.api.Plugin;
-import static mcp.mobius.waila.api.SpecialChars.RESET;
-import static mcp.mobius.waila.api.SpecialChars.GOLD;
-import static mcp.mobius.waila.api.SpecialChars.BLUE;
-import static mcp.mobius.waila.api.SpecialChars.GREEN;
-import static mcp.mobius.waila.api.SpecialChars.RED;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static mcp.mobius.waila.api.SpecialChars.*;
 
 @Plugin(name = "Gregtech5U", deps = "gregtech")
 public class PluginGregtech5U extends PluginBase
@@ -67,6 +68,7 @@ public class PluginGregtech5U extends PluginBase
         final GT_MetaTileEntity_BasicMachine BasicMachine = tMeta instanceof GT_MetaTileEntity_BasicMachine ? ((GT_MetaTileEntity_BasicMachine) tMeta) : null;
         final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
         final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
+        final GT_MetaTileEntity_BasicBatteryBuffer bateryBuffer = tMeta instanceof GT_MetaTileEntity_BasicBatteryBuffer ? ((GT_MetaTileEntity_BasicBatteryBuffer) tMeta) : null;
 
 
         final boolean showTransformer = tMeta instanceof GT_MetaTileEntity_Transformer && getConfig("transformer");
@@ -136,6 +138,14 @@ public class PluginGregtech5U extends PluginBase
             if (BasicMachine != null && getConfig("basicmachine")) {
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
             }
+
+            if(bateryBuffer != null && getConfig("basicmachine")) {
+                currenttip.add("Used Capacity: " + GREEN + GT_Utility.formatNumbers(tag.getLong("nowStorage")) + RESET + " EU");
+                currenttip.add("Total Capacity: " + YELLOW + GT_Utility.formatNumbers(tag.getLong("maxStorage")) + RESET + " EU");
+                currenttip.add("In: " + GREEN + GT_Utility.formatNumbers(tag.getLong("energyInput")) + RESET + " EU/t");
+                currenttip.add("Out: " + RED + GT_Utility.formatNumbers(tag.getLong("energyOutput")) + RESET + " EU/t");
+            }
+
         }
 
     }
@@ -151,6 +161,7 @@ public class PluginGregtech5U extends PluginBase
         final GT_MetaTileEntity_BasicMachine BasicMachine = tMeta instanceof GT_MetaTileEntity_BasicMachine ? ((GT_MetaTileEntity_BasicMachine) tMeta) : null;
         final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
         final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
+        final GT_MetaTileEntity_BasicBatteryBuffer bateryBuffer = tMeta instanceof GT_MetaTileEntity_BasicBatteryBuffer ? ((GT_MetaTileEntity_BasicBatteryBuffer) tMeta) : null;
 
         if (tMeta != null) {
             if (tMeta instanceof GT_MetaTileEntity_Transformer) {
@@ -202,6 +213,19 @@ public class PluginGregtech5U extends PluginBase
                 final int maxProgressSingleBlock = BasicMachine.mMaxProgresstime/20;
                 tag.setInteger("progressSingleBlock", progressSingleBlock);
                 tag.setInteger("maxProgressSingleBlock", maxProgressSingleBlock);
+            }
+
+            if (bateryBuffer != null) {
+                long[] tmp = bateryBuffer.getStoredEnergy();
+                long nowStorage = tmp[0];
+                long maxStorage = tmp[1];
+
+                long energyInput = bateryBuffer.getBaseMetaTileEntity().getAverageElectricInput();
+                long energyOutput = bateryBuffer.getBaseMetaTileEntity().getAverageElectricOutput();
+                tag.setLong("nowStorage", nowStorage);
+                tag.setLong("maxStorage", maxStorage);
+                tag.setLong("energyInput", energyInput);
+                tag.setLong("energyOutput", energyOutput);
             }
 
         }
