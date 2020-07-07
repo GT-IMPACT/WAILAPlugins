@@ -16,6 +16,7 @@ Miscellaneous WAILA plugins for various mods. Requires [EnderCore](http://ci.tte
    - Multiblock info and Multiblock Impact info
    - Basic Machine info
    - Battery Buffer info
+   - Lapatronic Capacity Storage info
 
 - Blood Magic (Ported from ImLookingAtBlood, by Pokefenn)
   - Capacity, LP, and tier of altars

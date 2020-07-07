@@ -3,6 +3,7 @@ package tterrag.wailaplugins.plugins;
 import com.enderio.core.common.util.BlockCoord;
 import com.impact.mods.GregTech.tileentities.multi.debug.GTMTE_MBBase;
 import com.impact.mods.GregTech.tileentities.multi.debug.GT_MetaTileEntity_MultiParallelBlockBase;
+import com.impact.mods.GregTech.tileentities.storage.GTMTE_LapPowerStation;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -27,6 +28,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import tterrag.wailaplugins.api.Plugin;
 
+import java.math.BigInteger;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,6 +72,7 @@ public class PluginGregtech5U extends PluginBase
         final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
         final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
         final GT_MetaTileEntity_BasicBatteryBuffer bateryBuffer = tMeta instanceof GT_MetaTileEntity_BasicBatteryBuffer ? ((GT_MetaTileEntity_BasicBatteryBuffer) tMeta) : null;
+        final GTMTE_LapPowerStation LapBuffer = tMeta instanceof GTMTE_LapPowerStation ? ((GTMTE_LapPowerStation) tMeta) : null;
 
 
         final boolean showTransformer = tMeta instanceof GT_MetaTileEntity_Transformer && getConfig("transformer");
@@ -124,6 +128,15 @@ public class PluginGregtech5U extends PluginBase
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress"), tag.getInteger("maxProgress")));
 
                 if (MultiParallel != null) currenttip.add(String.format("Parallel Point: %d", tag.getInteger("Parallel")));
+
+                if(LapBuffer != null) {
+                    currenttip.add("Stored: " + GREEN + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Stored"))) + RESET + " EU");
+                    currenttip.add("Capacity: " + YELLOW + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Capacity"))) + RESET + " EU");
+                    currenttip.add("Input: " + GREEN + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Input"))) + RESET + " EU/t");
+                    currenttip.add("Output: " + RED + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Output"))) + RESET + " EU/t");
+                    currenttip.add("Passive Discharge: " + RED + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Discharge"))) + RESET + " EU/t");
+
+                }
             }
 
             if(multiBlockBaseImpact != null && getConfig("multiblock")) {
@@ -192,6 +205,21 @@ public class PluginGregtech5U extends PluginBase
                 if (MultiParallel != null) {
                     final int Parallel = MultiParallel.mParallel;
                     tag.setInteger("Parallel", Parallel);
+                }
+
+                if(tMeta instanceof GTMTE_LapPowerStation) {
+                    GTMTE_LapPowerStation mte = (GTMTE_LapPowerStation)tMeta;
+                    final BigInteger Capacity = mte.capacity;
+                    final BigInteger Stored = mte.stored;
+                    final BigInteger Input = mte.intputLastTick;
+                    final BigInteger Output = mte.outputLastTick;
+                    final BigInteger Discharge = mte.passiveDischargeAmount;
+
+                    tag.setByteArray("Capacity", Capacity.toByteArray());
+                    tag.setByteArray("Stored", Stored.toByteArray());
+                    tag.setByteArray("Input", Input.toByteArray());
+                    tag.setByteArray("Output", Output.toByteArray());
+                    tag.setByteArray("Discharge", Discharge.toByteArray());
                 }
             }
 
