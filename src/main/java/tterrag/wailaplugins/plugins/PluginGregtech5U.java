@@ -127,7 +127,7 @@ public class PluginGregtech5U extends PluginBase
 
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress"), tag.getInteger("maxProgress")));
 
-                if (MultiParallel != null) currenttip.add(String.format("Parallel Point: %d", tag.getInteger("Parallel")));
+                if (MultiParallel != null && tag.getInteger("Parallel") > 1) currenttip.add(String.format("Parallel Point: %d", tag.getInteger("Parallel")));
 
                 if(LapBuffer != null) {
                     currenttip.add("Stored: " + GREEN + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Stored"))) + RESET + " EU");
