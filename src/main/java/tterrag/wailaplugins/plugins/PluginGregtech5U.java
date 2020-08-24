@@ -1,6 +1,7 @@
 package tterrag.wailaplugins.plugins;
 
 import com.enderio.core.common.util.BlockCoord;
+import com.github.technus.tectech.thing.metaTileEntity.multi.GT_MetaTileEntity_EM_research;
 import com.impact.mods.GregTech.tileentities.multi.debug.GTMTE_MBBase;
 import com.impact.mods.GregTech.tileentities.multi.debug.GT_MetaTileEntity_MultiParallelBlockBase;
 import com.impact.mods.GregTech.tileentities.storage.GTMTE_LapPowerStation;
@@ -73,6 +74,7 @@ public class PluginGregtech5U extends PluginBase
         final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
         final GT_MetaTileEntity_BasicBatteryBuffer bateryBuffer = tMeta instanceof GT_MetaTileEntity_BasicBatteryBuffer ? ((GT_MetaTileEntity_BasicBatteryBuffer) tMeta) : null;
         final GTMTE_LapPowerStation LapBuffer = tMeta instanceof GTMTE_LapPowerStation ? ((GTMTE_LapPowerStation) tMeta) : null;
+        final GT_MetaTileEntity_EM_research Research = tMeta instanceof GT_MetaTileEntity_EM_research ? ((GT_MetaTileEntity_EM_research) tMeta) : null;
 
 
         final boolean showTransformer = tMeta instanceof GT_MetaTileEntity_Transformer && getConfig("transformer");
@@ -137,6 +139,9 @@ public class PluginGregtech5U extends PluginBase
                     currenttip.add("Passive Discharge: " + RED + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Discharge"))) + RESET + " EU/t");
 
                 }
+                if(Research != null) {
+                    currenttip.add("Computation Remaining: " + GREEN + NumberFormat.getNumberInstance().format(tag.getLong("computationRemaining")) + " / " + YELLOW + NumberFormat.getNumberInstance().format(tag.getInteger("computationRequired")));
+                }
             }
 
             if(multiBlockBaseImpact != null && getConfig("multiblock")) {
@@ -175,6 +180,7 @@ public class PluginGregtech5U extends PluginBase
         final GT_MetaTileEntity_MultiParallelBlockBase MultiParallel = tMeta instanceof GT_MetaTileEntity_MultiParallelBlockBase ? ((GT_MetaTileEntity_MultiParallelBlockBase) tMeta) : null;
         final GTMTE_MBBase multiBlockBaseImpact = tMeta instanceof GTMTE_MBBase ? ((GTMTE_MBBase) tMeta) : null;
         final GT_MetaTileEntity_BasicBatteryBuffer bateryBuffer = tMeta instanceof GT_MetaTileEntity_BasicBatteryBuffer ? ((GT_MetaTileEntity_BasicBatteryBuffer) tMeta) : null;
+
 
         if (tMeta != null) {
             if (tMeta instanceof GT_MetaTileEntity_Transformer) {
@@ -220,6 +226,14 @@ public class PluginGregtech5U extends PluginBase
                     tag.setByteArray("Input", Input.toByteArray());
                     tag.setByteArray("Output", Output.toByteArray());
                     tag.setByteArray("Discharge", Discharge.toByteArray());
+                }
+                if (tMeta instanceof GT_MetaTileEntity_EM_research) {
+                    GT_MetaTileEntity_EM_research mte = (GT_MetaTileEntity_EM_research)tMeta;
+                    final long computationRemaining = mte.computationRemaining/20L;
+                    final long computationRequired = mte.computationRequired/20L;
+
+                    tag.setLong("computationRemaining", computationRemaining);
+                    tag.setLong("computationRequired", computationRequired);
                 }
             }
 
