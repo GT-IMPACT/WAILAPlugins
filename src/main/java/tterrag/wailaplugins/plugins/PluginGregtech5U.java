@@ -153,7 +153,7 @@ public class PluginGregtech5U extends PluginBase
 
             if (BasicMachine != null && getConfig("basicmachine")) {
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
-                currenttip.add("Consumption: " + RED + tag.getInteger("EUOut") +  " EU/t");
+                currenttip.add("Consumption: " + RED + tag.getInteger("EUOut") + RESET + " EU/t");
             }
 
             if(bateryBuffer != null && getConfig("basicmachine")) {
