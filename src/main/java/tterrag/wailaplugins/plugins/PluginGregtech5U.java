@@ -136,8 +136,6 @@ public class PluginGregtech5U extends PluginBase
                     currenttip.add("Capacity: " + YELLOW + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Capacity"))) + RESET + " EU");
                     currenttip.add("Input: " + GREEN + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Input"))) + RESET + " EU/t");
                     currenttip.add("Output: " + RED + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Output"))) + RESET + " EU/t");
-                    currenttip.add("Passive Discharge: " + RED + NumberFormat.getNumberInstance().format(new BigInteger(tag.getByteArray("Discharge"))) + RESET + " EU/t");
-
                 }
                 if(Research != null) {
                     currenttip.add("Computation Remaining: " + GREEN + NumberFormat.getNumberInstance().format(tag.getLong("computationRemaining")) + " / " + YELLOW + NumberFormat.getNumberInstance().format(tag.getInteger("computationRequired")));
@@ -155,6 +153,7 @@ public class PluginGregtech5U extends PluginBase
 
             if (BasicMachine != null && getConfig("basicmachine")) {
                 currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
+                currenttip.add("Consumption: " + RED + tag.getInteger("EUOut") +  " EU/t");
             }
 
             if(bateryBuffer != null && getConfig("basicmachine")) {
@@ -219,13 +218,11 @@ public class PluginGregtech5U extends PluginBase
                     final BigInteger Stored = mte.stored;
                     final BigInteger Input = mte.intputLastTick;
                     final BigInteger Output = mte.outputLastTick;
-                    final BigInteger Discharge = mte.passiveDischargeAmount;
 
                     tag.setByteArray("Capacity", Capacity.toByteArray());
                     tag.setByteArray("Stored", Stored.toByteArray());
                     tag.setByteArray("Input", Input.toByteArray());
                     tag.setByteArray("Output", Output.toByteArray());
-                    tag.setByteArray("Discharge", Discharge.toByteArray());
                 }
                 if (tMeta instanceof GT_MetaTileEntity_EM_research) {
                     GT_MetaTileEntity_EM_research mte = (GT_MetaTileEntity_EM_research)tMeta;
@@ -253,8 +250,10 @@ public class PluginGregtech5U extends PluginBase
             if (BasicMachine != null) {
                 final int progressSingleBlock = BasicMachine.mProgresstime/20;
                 final int maxProgressSingleBlock = BasicMachine.mMaxProgresstime/20;
+                final int EUOut = BasicMachine.mEUt;
                 tag.setInteger("progressSingleBlock", progressSingleBlock);
                 tag.setInteger("maxProgressSingleBlock", maxProgressSingleBlock);
+                tag.setInteger("EUOut", EUOut);
             }
 
             if (bateryBuffer != null) {
