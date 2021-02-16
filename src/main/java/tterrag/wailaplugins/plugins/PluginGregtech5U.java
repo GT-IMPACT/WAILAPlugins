@@ -18,6 +18,7 @@ import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Transformer
 import gregtech.api.util.GT_Utility;
 import gregtech.common.covers.GT_Cover_Fluidfilter;
 import gregtech.common.tileentities.boilers.GT_MetaTileEntity_Boiler_Solar;
+import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_PrimitiveBlastFurnace;
 import lombok.SneakyThrows;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaRegistrar;
@@ -107,6 +108,20 @@ public class PluginGregtech5U extends PluginBase
                 currenttip.add(String.format((GOLD + "Solar Boiler Output: " + RESET + "%d/%d L/s"), tag.getInteger("calcificationOutput"), tag.getInteger("maxCalcificationOutput")));
             }
 
+            if (tMeta instanceof  GT_MetaTileEntity_PrimitiveBlastFurnace){
+                if(tag.getBoolean("incompleteStructurePrimitiveBlastFurnace")) {
+                    currenttip.add(RED + "Incomplete Structure" + RESET);
+                }
+
+                currenttip.add(
+                        String.format(
+                                "Progress: %d s / %d s",
+                                tag.getInteger("progressPrimitiveBlastFurnace"),
+                                tag.getInteger("maxProgressPrimitiveBlastFurnace")
+                        )
+                );
+            }
+
             if (mBaseMetaTileEntity != null && getConfig("machineFacing")) {
                 final int facing = mBaseMetaTileEntity.getFrontFacing();
                 if(showTransformer) {
@@ -193,7 +208,15 @@ public class PluginGregtech5U extends PluginBase
                 final GT_MetaTileEntity_Boiler_Solar solar = (GT_MetaTileEntity_Boiler_Solar)tMeta;
                 tag.setInteger("calcificationOutput", (solar.getCalcificationOutput()*20/25));
                 tag.setInteger("maxCalcificationOutput", (solar.getBasicOutput()*20/25));
+            } else if (tMeta instanceof  GT_MetaTileEntity_PrimitiveBlastFurnace) {
+                final GT_MetaTileEntity_PrimitiveBlastFurnace blastFurnace = (GT_MetaTileEntity_PrimitiveBlastFurnace) tMeta;
+                final int progress = blastFurnace.mProgresstime/20;
+                final int maxProgress = blastFurnace.mMaxProgresstime/20;
+                tag.setInteger("progressPrimitiveBlastFurnace", progress);
+                tag.setInteger("maxProgressPrimitiveBlastFurnace", maxProgress);
+                tag.setBoolean("incompleteStructurePrimitiveBlastFurnace", !blastFurnace.mMachine);
             }
+
 
             if (multiBlockBase != null) {
                 final int problems = multiBlockBase.getIdealStatus() - multiBlockBase.getRepairStatus();
