@@ -103,13 +103,17 @@ public class PluginGregtech5U extends PluginBase
                     currenttip.add(RED + "Incomplete Structure" + RESET);
                 }
 
-                currenttip.add(
-                        String.format(
-                                "Progress: %d s / %d s",
-                                tag.getInteger("progressPrimitiveBlastFurnace"),
-                                tag.getInteger("maxProgressPrimitiveBlastFurnace")
-                        )
-                );
+                if (tag.getInteger("progressPrimitiveBlastFurnace") <= 20 &&
+                        tag.getInteger("maxProgressPrimitiveBlastFurnace") <= 20) {
+                    currenttip.add(String.format("Progress: %d t / %d t",
+                            tag.getInteger("progressPrimitiveBlastFurnace"),
+                            tag.getInteger("maxProgressPrimitiveBlastFurnace")));
+                } else {
+                    currenttip.add(String.format("Progress: %d s / %d s",
+                            tag.getInteger("progressPrimitiveBlastFurnace") / 20,
+                            tag.getInteger("maxProgressPrimitiveBlastFurnace") / 20));
+                }
+
             }
 
             if (mBaseMetaTileEntity != null && getConfig("machineFacing")) {
@@ -132,12 +136,20 @@ public class PluginGregtech5U extends PluginBase
                 }
                 currenttip.add((tag.getBoolean("hasProblems") ? (RED + "Need Maintenance") : GREEN + "Running Fine") + RESET + "  Efficiency: " + tag.getFloat("efficiency") + "%");
 
-                currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress"), tag.getInteger("maxProgress")));
-
+                if (tag.getInteger("progress") <= 20 && tag.getInteger("maxProgress") <= 20 ) {
+                    currenttip.add(String.format("Progress: %d t / %d t", tag.getInteger("progress"), tag.getInteger("maxProgress")));
+                } else {
+                    currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress") / 20, tag.getInteger("maxProgress") / 20));
+                }
             }
 
             if (BasicMachine != null && getConfig("basicmachine")) {
-                currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
+
+                if (tag.getInteger("progressSingleBlock") <= 20 && tag.getInteger("maxProgressSingleBlock") <= 20 ) {
+                    currenttip.add(String.format("Progress: %d t / %d t", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
+                } else {
+                    currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock") / 20, tag.getInteger("maxProgressSingleBlock") / 20));
+                }
                 currenttip.add("Consumption: " + RED + tag.getInteger("EUOut") + RESET + " EU/t");
             }
 
@@ -178,8 +190,8 @@ public class PluginGregtech5U extends PluginBase
                 tag.setInteger("maxCalcificationOutput", (solar.getBasicOutput()*20/25));
             } else if (tMeta instanceof  GT_MetaTileEntity_PrimitiveBlastFurnace) {
                 final GT_MetaTileEntity_PrimitiveBlastFurnace blastFurnace = (GT_MetaTileEntity_PrimitiveBlastFurnace) tMeta;
-                final int progress = blastFurnace.mProgresstime/20;
-                final int maxProgress = blastFurnace.mMaxProgresstime/20;
+                final int progress = blastFurnace.mProgresstime;
+                final int maxProgress = blastFurnace.mMaxProgresstime;
                 tag.setInteger("progressPrimitiveBlastFurnace", progress);
                 tag.setInteger("maxProgressPrimitiveBlastFurnace", maxProgress);
                 tag.setBoolean("incompleteStructurePrimitiveBlastFurnace", !blastFurnace.mMachine);
@@ -189,8 +201,8 @@ public class PluginGregtech5U extends PluginBase
             if (multiBlockBase != null) {
                 final int problems = multiBlockBase.getIdealStatus() - multiBlockBase.getRepairStatus();
                 final float efficiency = multiBlockBase.mEfficiency / 100.0F;
-                final int progress = multiBlockBase.mProgresstime/20;
-                final int maxProgress = multiBlockBase.mMaxProgresstime/20;
+                final int progress = multiBlockBase.mProgresstime;
+                final int maxProgress = multiBlockBase.mMaxProgresstime;
 
                 tag.setBoolean("hasProblems", problems > 0);
                 tag.setFloat("efficiency", efficiency);
@@ -200,8 +212,8 @@ public class PluginGregtech5U extends PluginBase
             }
 
             if (BasicMachine != null) {
-                final int progressSingleBlock = BasicMachine.mProgresstime/20;
-                final int maxProgressSingleBlock = BasicMachine.mMaxProgresstime/20;
+                final int progressSingleBlock = BasicMachine.mProgresstime;
+                final int maxProgressSingleBlock = BasicMachine.mMaxProgresstime;
                 final int EUOut = BasicMachine.mEUt;
                 tag.setInteger("progressSingleBlock", progressSingleBlock);
                 tag.setInteger("maxProgressSingleBlock", maxProgressSingleBlock);
