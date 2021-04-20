@@ -1,5 +1,6 @@
 package tterrag.wailaplugins.plugins;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import com.enderio.core.common.util.BlockCoord;
@@ -45,7 +46,9 @@ public class PluginIFluidHandler extends PluginBase
         {
             if (tank != null && tank.fluid != null)
             {
-                ((ITaggedList<String, String>) currenttip).add(tank.fluid.amount + " / " + tank.capacity + " mB " + tank.fluid.getLocalizedName(),
+                ((ITaggedList<String, String>) currenttip).add(NumberFormat.getNumberInstance()
+                        .format(tank.fluid.amount) + " / " + NumberFormat.getNumberInstance()
+                        .format(tank.capacity) + " mB " + tank.fluid.getLocalizedName(),
                         "IFluidHandler");
             }
         }
