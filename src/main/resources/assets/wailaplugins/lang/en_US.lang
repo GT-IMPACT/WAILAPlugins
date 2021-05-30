@@ -69,6 +69,22 @@ wp.config.Gregtech5U.machineFacing=Show Machine Facing
 wp.config.Gregtech5U.multiblock=Show Multiblock Info
 wp.config.Gregtech5U.basicmachine=Show Basicmachine Info
 
+wp.config.Gregtech5U.facing=Facing
+wp.config.Gregtech5U.stepdown=Step Down
+wp.config.Gregtech5U.stepup=Step Up
+wp.config.Gregtech5U.input=Input
+wp.config.Gregtech5U.output=Output
+wp.config.Gregtech5U.solaroutput=Solar Boiler Output
+wp.config.Gregtech5U.incompletestructure=Incomplete Structure
+wp.config.Gregtech5U.progress=Progress
+wp.config.Gregtech5U.maintenance=Need Maintenance
+wp.config.Gregtech5U.running=Running Fine
+wp.config.Gregtech5U.efficiency=Efficiency
+wp.config.Gregtech5U.consumption=Consumption
+wp.config.Gregtech5U.usedcapacity=Used Capacity
+wp.config.Gregtech5U.totalcapacity=Total Capacity
+wp.config.Gregtech5U.eut=EU/t
+wp.config.Gregtech5U.eu=EU
 
 ## IC2 Crops
 

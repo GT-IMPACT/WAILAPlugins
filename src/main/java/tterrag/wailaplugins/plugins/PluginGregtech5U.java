@@ -31,10 +31,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static mcp.mobius.waila.api.SpecialChars.*;
+import static net.minecraft.util.StatCollector.translateToLocal;
 
 @Plugin(name = "Gregtech5U", deps = "gregtech")
 public class PluginGregtech5U extends PluginBase
 {
+    
+    private String trans(String str) {
+        return translateToLocal("wp.config.Gregtech5U." + str);
+    }
 
     @Override
     public void load(IWailaRegistrar registrar)
@@ -80,36 +85,36 @@ public class PluginGregtech5U extends PluginBase
         }
 
         if (tMeta != null) {
-            String facingStr = "Facing";
+            String facingStr = trans("facing");
             if (showTransformer && tag.hasKey("isAllowedToWork")) {
                 currenttip.add(
                     String.format(
                         "%s %d(%dA) -> %d(%dA)",
-                        (allowedToWork ? (GREEN + "Step Down") : (RED + "Step Up")) + RESET,
+                        (allowedToWork ? (GREEN + trans("stepdown")) : (RED + trans("stepup"))) + RESET,
                         tag.getLong("maxEUInput"),
                         tag.getLong("maxAmperesIn"),
                         tag.getLong("maxEUOutput"),
                         tag.getLong("maxAmperesOut")
                     )
                 );
-                facingStr = tag.getBoolean("isAllowedToWork") ? "Input" : "Output";
+                facingStr = tag.getBoolean("isAllowedToWork") ? trans("input") : trans("output");
             }
             if (showSolar && tag.hasKey("calcificationOutput")) {
-                currenttip.add(String.format((GOLD + "Solar Boiler Output: " + RESET + "%d/%d L/s"), tag.getInteger("calcificationOutput"), tag.getInteger("maxCalcificationOutput")));
+                currenttip.add(String.format((GOLD + trans("solaroutput") + ": " + RESET + "%d/%d L/s"), tag.getInteger("calcificationOutput"), tag.getInteger("maxCalcificationOutput")));
             }
 
             if (tMeta instanceof  GT_MetaTileEntity_PrimitiveBlastFurnace){
                 if(tag.getBoolean("incompleteStructurePrimitiveBlastFurnace")) {
-                    currenttip.add(RED + "Incomplete Structure" + RESET);
+                    currenttip.add(RED + trans("incompletestructure") + RESET);
                 }
 
                 if (tag.getInteger("progressPrimitiveBlastFurnace") <= 20 &&
                         tag.getInteger("maxProgressPrimitiveBlastFurnace") <= 20) {
-                    currenttip.add(String.format("Progress: %d t / %d t",
+                    currenttip.add(trans("progress") + String.format(": %d t / %d t",
                             tag.getInteger("progressPrimitiveBlastFurnace"),
                             tag.getInteger("maxProgressPrimitiveBlastFurnace")));
                 } else {
-                    currenttip.add(String.format("Progress: %d s / %d s",
+                    currenttip.add(String.format(trans("progress") + ": %d s / %d s",
                             tag.getInteger("progressPrimitiveBlastFurnace") / 20,
                             tag.getInteger("maxProgressPrimitiveBlastFurnace") / 20));
                 }
@@ -120,9 +125,9 @@ public class PluginGregtech5U extends PluginBase
                 final int facing = mBaseMetaTileEntity.getFrontFacing();
                 if(showTransformer) {
                     if((side == facing && allowedToWork) || (side != facing && !allowedToWork)) {
-                        currenttip.add(String.format(GOLD + "Input:" + RESET + " %d(%dA)", tag.getLong("maxEUInput"), tag.getLong("maxAmperesIn")));
+                        currenttip.add(String.format(GOLD + trans("input") + ":" + RESET + " %d(%dA)", tag.getLong("maxEUInput"), tag.getLong("maxAmperesIn")));
                     } else {
-                        currenttip.add(String.format(BLUE + "Output:" + RESET + " %d(%dA)", tag.getLong("maxEUOutput"), tag.getLong("maxAmperesOut")));
+                        currenttip.add(String.format(BLUE + trans("output") + ":" + RESET + " %d(%dA)", tag.getLong("maxEUOutput"), tag.getLong("maxAmperesOut")));
                     }
                 } else {
                     currenttip.add(String.format("%s: %s", facingStr, ForgeDirection.getOrientation(facing).name()));
@@ -132,36 +137,34 @@ public class PluginGregtech5U extends PluginBase
 
             if(multiBlockBase != null && getConfig("multiblock")) {
                 if(tag.getBoolean("incompleteStructure")) {
-                    currenttip.add(RED + "Incomplete Structure" + RESET);
+                    currenttip.add(RED + trans("incompletestructure") + RESET);
                 }
-                currenttip.add((tag.getBoolean("hasProblems") ? (RED + "Need Maintenance") : GREEN + "Running Fine") + RESET + "  Efficiency: " + tag.getFloat("efficiency") + "%");
+                currenttip.add((tag.getBoolean("hasProblems") ? (RED + trans("maintenance")) : GREEN + trans("running")) + RESET + "  " + trans("efficiency") + " : " + tag.getFloat("efficiency") + "%");
 
                 if (tag.getInteger("progress") <= 20 && tag.getInteger("maxProgress") <= 20 ) {
-                    currenttip.add(String.format("Progress: %d t / %d t", tag.getInteger("progress"), tag.getInteger("maxProgress")));
+                    currenttip.add(trans("progress") + String.format(": %d t / %d t", tag.getInteger("progress"), tag.getInteger("maxProgress")));
                 } else {
-                    currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progress") / 20, tag.getInteger("maxProgress") / 20));
+                    currenttip.add(trans("progress") + String.format(": %d s / %d s", tag.getInteger("progress") / 20, tag.getInteger("maxProgress") / 20));
                 }
             }
 
             if (BasicMachine != null && getConfig("basicmachine")) {
 
                 if (tag.getInteger("progressSingleBlock") <= 20 && tag.getInteger("maxProgressSingleBlock") <= 20 ) {
-                    currenttip.add(String.format("Progress: %d t / %d t", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
+                    currenttip.add(trans("progress") + String.format(": %d t / %d t", tag.getInteger("progressSingleBlock"), tag.getInteger("maxProgressSingleBlock")));
                 } else {
-                    currenttip.add(String.format("Progress: %d s / %d s", tag.getInteger("progressSingleBlock") / 20, tag.getInteger("maxProgressSingleBlock") / 20));
+                    currenttip.add(trans("progress") + String.format(": %d s / %d s", tag.getInteger("progressSingleBlock") / 20, tag.getInteger("maxProgressSingleBlock") / 20));
                 }
-                currenttip.add("Consumption: " + RED + tag.getInteger("EUOut") + RESET + " EU/t");
+                currenttip.add(trans("consumption") + ": " + RED + tag.getInteger("EUOut") + RESET + " " + trans("EU"));
             }
 
             if(bateryBuffer != null && getConfig("basicmachine")) {
-                currenttip.add("Used Capacity: " + GREEN + GT_Utility.formatNumbers(tag.getLong("nowStorage")) + RESET + " EU");
-                currenttip.add("Total Capacity: " + YELLOW + GT_Utility.formatNumbers(tag.getLong("maxStorage")) + RESET + " EU");
-                currenttip.add("In: " + GREEN + GT_Utility.formatNumbers(tag.getLong("energyInput")) + RESET + " EU/t");
-                currenttip.add("Out: " + RED + GT_Utility.formatNumbers(tag.getLong("energyOutput")) + RESET + " EU/t");
+                currenttip.add(trans("usedcapacity") + ": " + GREEN + GT_Utility.formatNumbers(tag.getLong("nowStorage")) + RESET + " " + trans("EU"));
+                currenttip.add(trans("totalcapacity") + ": " + YELLOW + GT_Utility.formatNumbers(tag.getLong("maxStorage")) + RESET + " " + trans("EU"));
+                currenttip.add(trans("input") + ": " + GREEN + GT_Utility.formatNumbers(tag.getLong("energyInput")) + RESET + " " + trans("eut"));
+                currenttip.add(trans("output") + ": " + RED + GT_Utility.formatNumbers(tag.getLong("energyOutput")) + RESET + " " + trans("eut"));
             }
-
         }
-
     }
 
 
