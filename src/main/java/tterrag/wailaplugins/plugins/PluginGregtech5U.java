@@ -155,12 +155,12 @@ public class PluginGregtech5U extends PluginBase
                 } else {
                     currenttip.add(trans("progress") + String.format(": %d s / %d s", tag.getInteger("progressSingleBlock") / 20, tag.getInteger("maxProgressSingleBlock") / 20));
                 }
-                currenttip.add(trans("consumption") + ": " + RED + tag.getInteger("EUOut") + RESET + " " + trans("EU"));
+                currenttip.add(trans("consumption") + ": " + RED + tag.getInteger("EUOut") + RESET + " " + trans("eu"));
             }
 
             if(bateryBuffer != null && getConfig("basicmachine")) {
-                currenttip.add(trans("usedcapacity") + ": " + GREEN + GT_Utility.formatNumbers(tag.getLong("nowStorage")) + RESET + " " + trans("EU"));
-                currenttip.add(trans("totalcapacity") + ": " + YELLOW + GT_Utility.formatNumbers(tag.getLong("maxStorage")) + RESET + " " + trans("EU"));
+                currenttip.add(trans("usedcapacity") + ": " + GREEN + GT_Utility.formatNumbers(tag.getLong("nowStorage")) + RESET + " " + trans("eu"));
+                currenttip.add(trans("totalcapacity") + ": " + YELLOW + GT_Utility.formatNumbers(tag.getLong("maxStorage")) + RESET + " " + trans("eu"));
                 currenttip.add(trans("input") + ": " + GREEN + GT_Utility.formatNumbers(tag.getLong("energyInput")) + RESET + " " + trans("eut"));
                 currenttip.add(trans("output") + ": " + RED + GT_Utility.formatNumbers(tag.getLong("energyOutput")) + RESET + " " + trans("eut"));
             }
