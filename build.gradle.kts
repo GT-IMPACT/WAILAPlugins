@@ -1,30 +1,33 @@
-plugins {
-    alias(libs.plugins.buildconfig)
-    id("minecraft")
-    id("publish")
-}
+import settings.getVersionMod
 
-repositories {
-    maven("http://jenkins.usrv.eu:8081/nexus/content/groups/public/") { isAllowInsecureProtocol = true }
-    maven("https://jitpack.io")
-    maven("https://cursemaven.com") { content { includeGroup("curse.maven") } }
-    maven("https://maven.ic2.player.to/") { metadataSources { mavenPom(); artifact() } }
-    maven("https://gregtech.overminddl1.com/") { mavenContent { excludeGroup("net.minecraftforge") } }
-    mavenCentral()
-    mavenLocal()
+plugins {
+    alias(libs.plugins.setup.minecraft)
+    alias(libs.plugins.setup.publish)
+    id(libs.plugins.buildconfig.get().pluginId)
 }
 
 val modId: String by extra
 val modName: String by extra
 val modGroup: String by extra
 
+extra.set("modVersion", getVersionMod())
+
 buildConfig {
     packageName("space.impact.$modId")
     buildConfigField("String", "MODID", "\"${modId}\"")
     buildConfigField("String", "MODNAME", "\"${modName}\"")
-    buildConfigField("String", "VERSION", "\"${project.version}\"")
+    buildConfigField("String", "VERSION", "\"${getVersionMod()}\"")
     buildConfigField("String", "GROUPNAME", "\"${modGroup}\"")
     useKotlinOutput { topLevelConstants = true }
+}
+
+repositories {
+    maven("https://maven.accident.space/repository/maven-public/") {
+        mavenContent {
+            includeGroup("space.impact")
+            includeGroupByRegex("space\\.impact\\..+")
+        }
+    }
 }
 
 dependencies {
@@ -39,5 +42,4 @@ dependencies {
     compileOnly("com.mod-buildcraft:buildcraft:7.1.23:dev") { isTransitive = false }
     annotationProcessor("org.projectlombok:lombok:1.18.22")
     compileOnly(fileTree(mapOf("dir" to "libs/", "include" to listOf("*.jar"))))
-
 }

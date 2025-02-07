@@ -1,4 +1,7 @@
 WAILAPlugins
+
+[![Latest Release](https://img.shields.io/github/v/tag/GT-IMPACT/WAILAPlugins?label=Latest&sort=semver)](https://github.com/GT-IMPACT/WAILAPlugins/releases/latest)
+
 ============
 
 Miscellaneous WAILA plugins for various mods. Requires [EnderCore](http://ci.tterrag.com/job/EnderCore/).
