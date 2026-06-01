@@ -25,16 +25,24 @@ repositories {
     maven("https://maven.accident.space/repository/maven-public/") {
         mavenContent {
             includeGroup("space.impact")
+            includeGroup("com.github.GTNewHorizons")
             includeGroupByRegex("space\\.impact\\..+")
+        }
+        credentials {
+            username = System.getenv("MAVEN_USER") ?: "NONE"
+            password = System.getenv("MAVEN_PASSWORD") ?: "NONE"
         }
     }
 }
 
 dependencies {
-    api("com.github.GTNewHorizons:waila:1.6.+:dev")
-    compileOnly("com.github.GTNewHorizons:EnderCore:0.2.+:dev") { isTransitive = false }
-    compileOnly("com.github.GTNewHorizons:ForestryMC:4.6.+:dev") { isTransitive = false }
-    compileOnly("com.github.GTNewHorizons:Railcraft:9.14.+:dev") { isTransitive = false }
+    // maven impact
+    api("com.github.GTNewHorizons:waila:1.7.3:dev")
+    api("com.github.GTNewHorizons:EnderCore:0.2.7:dev") { isTransitive = false }
+    compileOnly("com.github.GTNewHorizons:ForestryMC:4.6.0:dev") { isTransitive = false }
+    compileOnly("com.github.GTNewHorizons:Railcraft:9.14.8:dev") { isTransitive = false }
+
+    // other
     compileOnly("curse.maven:pams-harvestcraft-221857:2270206") { isTransitive = false }
     compileOnly("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev") { isTransitive = false }
     compileOnly("curse.maven:extra-utilities-225561:2264384") { isTransitive = false }
